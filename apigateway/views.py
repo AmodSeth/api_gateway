@@ -35,6 +35,9 @@ class gateway(APIView):
         elif path[1] == 'suraksha':
             url = self.base_url +":8005"
             url = self.generate_url(url, path)
+        elif path[1] == 'equitasacl':
+            url = self.base_url +":8001"
+            url = self.generate_url(url, path)
         print("hhhh", url)
         if method_type == 'get':
             print("dixit", url)
