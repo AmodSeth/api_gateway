@@ -38,19 +38,33 @@ class gateway(APIView):
         elif path[1] == 'equitasacl':
             url = self.base_url +":8001"
             url = self.generate_url(url, path)
-        print("hhhh", url)
+        elif path[1] == 'lms':
+            url = self.base_url +":8012"
+            url = self.generate_url(url, path)
         if method_type == 'get':
-            print("dixit", url)
             response = requests.get(url=url, headers=self.headers, params=request.query_params.dict())
         elif method_type == 'post':
+            print("************************abhi**********************")
             response = requests.post(url=url, headers=self.headers, data=json.dumps(request.data))
+        elif method_type == 'delete':
+            print("************************DELETE REQUEST**********************")
+            response = requests.delete(url=url, headers=self.headers, params=request.query_params.dict())
+
         data = response.text
         print(response.headers.get('Content-Type').split(";")[0])
         if response.headers.get('Content-Type').split(";")[0] == 'text/html':
             print("nitin")
-            return HttpResponse(data, content_type="text/html")
+            print("*****************Rachit********************", data)
+            if path[3] == 'callback':
+                return HttpResponse(data, content_type='text/html')
+            return HttpResponse(data, content_type='text/html')
         elif response.headers.get('Content-Type').split(";")[0] == 'application/json':
             return Response(data=json.loads(data), status=response.status_code)
+        elif response.headers.get('Content-Type').split(";")[0] == 'text/csv':
+            return HttpResponse(data, content_type='text/csv')
+        else:
+            print("dfucnhnd")
+            return Response(data=data, status=response.status_code)
 
     def get(self, request):
         return self.operation(request, 'get')
