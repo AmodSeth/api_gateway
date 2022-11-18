@@ -1,5 +1,5 @@
 import json
-
+from django.http import QueryDict
 import requests
 from django.shortcuts import render
 from django.http import HttpResponse
@@ -44,8 +44,11 @@ class gateway(APIView):
         if method_type == 'get':
             response = requests.get(url=url, headers=self.headers, params=request.query_params.dict())
         elif method_type == 'post':
-            print("************************abhi**********************")
-            response = requests.post(url=url, headers=self.headers, data=json.dumps(request.data))
+            print("************************NiTiN**********************")
+            if isinstance(request.data, QueryDict):
+                response = requests.post(url=url, headers=self.headers, data=request.data)
+            else:
+                response = requests.post(url=url, headers=self.headers, data=json.dumps(request.data))
         elif method_type == 'delete':
             print("************************DELETE REQUEST**********************")
             response = requests.delete(url=url, headers=self.headers, params=request.query_params.dict())
