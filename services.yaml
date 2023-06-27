@@ -1,4 +1,4 @@
-- serviceName: CMS
+- serviceName: CMsdS
   path: cms
   url: https://cms-pre.theblackswan.in
   rateLimit:

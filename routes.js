@@ -22,9 +22,8 @@ router.all('/:service/*', async (req, res) => {
     // Verify Auth Token [if present]
     const {status, data} = utils.verifyToken(req)
     if (status != 200){
-      res.status(status).json({ error: data });
+      return res.status(status).json({ error: data });
     }
-
 
     const response = await axios({
       method: req.method,
@@ -33,13 +32,13 @@ router.all('/:service/*', async (req, res) => {
       data: req.body,
     });
     // console.log(`METHOD=>${req.method}\nURL=>${url}${path}`);
-    res.status(response.status).send(response.data);
+    return res.status(response.status).send(response.data);
   } catch (error) {
     if (error.response) {
-      res.status(error.response.status).json({ error: error.response.data });
+      return res.status(error.response.status).json({ error: error.response.data });
     } else {
       console.log(error);
-      res.status(500).json({ error: 'Internal Server Error' });
+      return res.status(500).json({ error: 'Internal Server Error' });
     }
   }
 });

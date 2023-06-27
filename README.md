@@ -20,6 +20,12 @@ This microservice acts as a single point of contact for FrontEnd, without exposi
 > DB-Less Design 
 
 ```
+## .ENV file content
+
+```
+NODE_ENV=development
+
+```
 
 ## Tech Stack
 
