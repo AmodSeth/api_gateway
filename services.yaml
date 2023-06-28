@@ -1,6 +1,6 @@
 services:
-  - serviceName: Login
-    path: login
+  - serviceName: Foundation
+    path: foundation
     url: https://foundation-uatn.theblackswan.in
     rateLimit:
       enabled: true
@@ -15,10 +15,12 @@ services:
       maxRequests: 100
       windowMs: 60000
 
-  - serviceName: ZIBPL_POSP
+  - serviceName: MASTER
+    path: master
+    url: https://master-service-uatn.theblackswan.in
+
+
+  - serviceName: POSP
     path: posp
     url: https://posp-dev.zopperinsurance.com
-    rateLimit:
-      enabled: false
-      maxRequests: 50
-      windowMs: 60000
+

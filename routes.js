@@ -34,7 +34,7 @@ router.all('/:service/*', async (req, res) => {
     return res.status(response.status).send(response.data);
   } catch (error) {
     if (error.response) {
-      return res.status(error.response.status).send( error.response.data);
+      return res.status(error.response.status).send(error.response.data);
     } else {
       console.log(error);
       return res.status(500).json({ error: 'Internal Server Error' });
