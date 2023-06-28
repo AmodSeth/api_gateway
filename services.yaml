@@ -1,21 +1,24 @@
-- serviceName: CMsdS
-  path: cms
-  url: https://cms-pre.theblackswan.in
-  rateLimit:
-    enabled: true
-    maxRequests: 100
-    windowMs: 60000
+services:
+  - serviceName: Login
+    path: login
+    url: https://foundation-uatn.theblackswan.in
+    rateLimit:
+      enabled: true
+      maxRequests: 100
+      windowMs: 60000
 
-# - serviceName: CMS
-#   path: cms
-#   url: http://cms-service.example.com
-#   rateLimit:
-#     enabled: false
+  - serviceName: CMS
+    path: cms
+    url: https://cms-pre.theblackswan.in
+    rateLimit:
+      enabled: true
+      maxRequests: 100
+      windowMs: 60000
 
-- serviceName: ZIBPL_POSP
-  path: posp
-  url: https://posp-dev.zopperinsurance.com
-  rateLimit:
-    enabled: false
-    maxRequests: 50
-    windowMs: 60000
+  - serviceName: ZIBPL_POSP
+    path: posp
+    url: https://posp-dev.zopperinsurance.com
+    rateLimit:
+      enabled: false
+      maxRequests: 50
+      windowMs: 60000

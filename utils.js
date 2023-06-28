@@ -6,7 +6,7 @@ const updateServices = (newServices) => {
 };
 
 const getServices = () => {
-  return services;
+  return services.services;
 };
 
 // Function to verify JWT token
