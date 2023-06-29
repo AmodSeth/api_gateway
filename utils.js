@@ -30,7 +30,7 @@ const getRateLimit = () => {
 };
 
 // Function to verify JWT token
-const verifyToken = (req) => {
+const verifyToken = (req, service) => {
     let result = {};
     try {
         const authHeader = req.headers.authorization;
@@ -40,20 +40,24 @@ const verifyToken = (req) => {
                 throw new Error("Invalid Authentication Header.");
             }
             const token = authHeader.split(' ')[1];
-            const decoded = jwt.verify(token, '234');
+            const pub_key = process.env.TOKEN_KEY // add double quotes around the key variable in env file
+
+            const decoded = jwt.verify(token, pub_key);
             result.status=200;
             result.data=decoded;
+            
+
             return result;
         }else{
-            result.status=200;
-            result.data={};
-            return result;
+            throw new Error("Authentication Header Missing.");
         }
 
     } catch (error) {
         result.data=error.message;
+        console.log('sss', error.message);
         if (error instanceof jwt.JsonWebTokenError) {
-            result.data="Invalid Authentication Token.";
+            console.log(error.message)
+            result.data="Invalid or Expired Authentication Token.";
         }
         result.status=403;
         return result;
