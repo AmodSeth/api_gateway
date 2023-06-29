@@ -20,6 +20,32 @@ This microservice acts as a single point of contact for FrontEnd, without exposi
 > DB-Less Design 
 
 ```
+
+## service.yaml content
+```
+rateLimit:
+  enabled: true
+  durationInSec: 5
+  maxRequests: 1
+
+services:
+  - serviceName: Foundation
+    path: foundation
+    url: https://foundation-uatn.theblackswan.in
+    rateLimitEnabled: false
+
+  - serviceName: CMS
+    path: cms
+    url: https://cms-uatn.theblackswan.in
+
+  - serviceName: MASTER
+    path: master
+    url: https://master-service-uatn.theblackswan.in
+
+  - serviceName: POSP
+    path: posp
+    url: https://posp-dev.zopperinsurance.com
+```
 ## .ENV file content
 
 ```

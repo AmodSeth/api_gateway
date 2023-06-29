@@ -2,6 +2,14 @@
 
 environment=$NODE_ENV
 pm2_options=""
+# Path to the services.yaml file
+servicesFile="services.yaml"
+
+# Check if the file exists
+if [ ! -f "$servicesFile" ]; then
+  echo "ERROR: services.yaml file not found!"
+  exit 1
+fi
 
 [[ $environment == "production" ]] || pm2_options="--no-daemon"
 
