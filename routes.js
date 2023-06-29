@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.all('/:service/:sub_url/*', async (req, res) => {
   const { service, sub_url } = req.params;
-  console.log(req.params)
+
   const matchedService = utils.getServices().find(s => s.path.toLowerCase() === service.toLowerCase());
 
   if (!matchedService) {
@@ -17,7 +17,7 @@ router.all('/:service/:sub_url/*', async (req, res) => {
   const { url } = matchedService;
   const path = req.url.replace(`/${service}`, '');
   
-  const bypassAuthArray = ["public", "callback"]
+  const bypassAuthArray = ["public", "callback","media"]
   const oldTokenArray = ["motor","master"]
 
   try {
@@ -65,7 +65,7 @@ router.all('/:service/:sub_url/*', async (req, res) => {
       data: req.body,
     });
     // console.log(`METHOD=>${req.method}\nURL=>${url}${path}`);
-    return res.status(response.status).json(response.data);
+    return res.status(response.status).send(response.data);
   } catch (error) {
     if (error.response) {
       return res.status(error.response.status).json(error.response.data);
