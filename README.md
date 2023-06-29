@@ -25,14 +25,13 @@ This microservice acts as a single point of contact for FrontEnd, without exposi
 ```
 rateLimit:
   enabled: true
-  durationInSec: 5
-  maxRequests: 1
+  durationInSec: 10
+  maxRequests: 5
 
 services:
   - serviceName: Foundation
     path: foundation
     url: https://foundation-uatn.theblackswan.in
-    rateLimitEnabled: false
 
   - serviceName: CMS
     path: cms

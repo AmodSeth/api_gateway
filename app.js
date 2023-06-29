@@ -11,7 +11,7 @@ const app = express();
 const upload = multer();
 
 // Middleware for security purposes
-app.use(helmet())
+app.use(helmet());
 
 // Middleware to parse JSON body
 app.use(bodyParser.json());
@@ -22,7 +22,9 @@ app.use(upload.any());
 
 app.use(morgan(':method :url STATUS=:status RESPONSE_TIME=:response-time ms'));
 app.use('/', routes);
-
+app.use((err, req, res, next) => {
+    console.log("uncaughtException: ", err);
+  });
 fileWatcher.startWatching();
 fileWatcher.loadYAML(); // Call the loadYAML function
 

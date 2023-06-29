@@ -1,9 +1,5 @@
 let services = [];
-let rateLimitConfig = {
-    enabled: false,
-    limiter:{},
-    errorMsg: "Too many requests, please try again later."
-};
+let rateLimitConfig = {}
 
 
 
@@ -11,14 +7,41 @@ const jwt = require('jsonwebtoken');
 
 
 const updateServices = (conf) => {
-  services = conf.services;
+    //validation for each service
+    if (!conf.hasOwnProperty('services')) {
+        throw new Error('YAML file is missing the services object');
+    }
+    const requiredKeys = ['serviceName', 'path', 'url'];
+    conf.services.forEach(obj => {
+    const missingKeys = [];
+
+    requiredKeys.forEach(key => {
+        if (!obj.hasOwnProperty(key)) {
+        missingKeys.push(key);
+        }
+    });
+
+    if (missingKeys.length > 0) {
+        const errorMessage = `Services is missing the following key(s): ${missingKeys.join(', ')}`;
+        throw new Error(errorMessage);
+    }
+
+    });
+    services = conf.services;
 };
 const updateRateLimit = (conf) => {
-
-    // Sets rate limiting configuration if enabled
-    if (conf.rateLimit.enabled){
-        rateLimitConfig.enabled = true;
+    //validation for rateLimit
+    if (!conf.hasOwnProperty('rateLimit')) {
+        throw new Error('YAML file is missing the rateLimit object');
     }
+    const requiredKeys = ['enabled', 'durationInSec', 'maxRequests'];
+    if (requiredKeys.some(key => !conf.rateLimit.hasOwnProperty(key))) {
+        const missingKeys = requiredKeys.filter(key => !conf.rateLimit.hasOwnProperty(key));
+        const errorMessage = `rateLimit is missing the following key(s): ${missingKeys.join(', ')}`;
+        throw new Error(errorMessage);
+    }
+
+    rateLimitConfig = conf.rateLimit
 };
 
 const getServices = () => {
@@ -54,9 +77,7 @@ const verifyToken = (req, service) => {
 
     } catch (error) {
         result.data=error.message;
-        console.log('sss', error.message);
         if (error instanceof jwt.JsonWebTokenError) {
-            console.log(error.message)
             result.data="Invalid or Expired Authentication Token.";
         }
         result.status=403;
