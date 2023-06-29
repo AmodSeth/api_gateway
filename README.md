@@ -21,7 +21,7 @@ This microservice acts as a single point of contact for FrontEnd, without exposi
 
 ```
 
-## service.yaml content
+## services.yaml content
 ```
 rateLimit:
   enabled: true
