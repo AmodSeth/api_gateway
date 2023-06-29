@@ -1,12 +1,32 @@
 let services = [];
+let rateLimitConfig = {
+    enabled: false,
+    limiter:{},
+    errorMsg: "Too many requests, please try again later."
+};
+
+
+
 const jwt = require('jsonwebtoken');
 
-const updateServices = (newServices) => {
-  services = newServices;
+
+const updateServices = (conf) => {
+  services = conf.services;
+};
+const updateRateLimit = (conf) => {
+
+    // Sets rate limiting configuration if enabled
+    if (conf.rateLimit.enabled){
+        rateLimitConfig.enabled = true;
+    }
 };
 
 const getServices = () => {
-  return services.services;
+  return services;
+};
+
+const getRateLimit = () => {
+  return rateLimitConfig;
 };
 
 // Function to verify JWT token
@@ -45,4 +65,6 @@ module.exports = {
   updateServices: updateServices,
   getServices: getServices,
   verifyToken: verifyToken,
+  getRateLimit: getRateLimit,
+  updateRateLimit: updateRateLimit,
 };

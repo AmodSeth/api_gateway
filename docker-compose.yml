@@ -2,11 +2,26 @@ version: '3'
 services:
   api-gateway:
     build: .
-    container_name: api-gateway-container
+    container_name: api_gateway_node_container
     ports:
       - '8112:8765'
     command: bash -c "npm install && ./start-server.sh"
     volumes:
       - ./:/application
     env_file: .env
-    # restart: always
+    restart: always
+    # depends_on:
+    #   - redis
+
+  # redis:
+  #   image: redis:latest
+  #   container_name: api_gateway_redis_container
+  #   expose:
+  #     - 6379
+  #   restart: always
+  #   read_only: true
+  #   volumes:
+  #     - ./data/redis/log:/var/log
+  #     - ./data/redis/data:/data
+  #   security_opt:
+  #     - no-new-privileges:true

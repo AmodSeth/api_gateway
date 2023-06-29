@@ -6,7 +6,7 @@ const watchFileChanges = () => {
   fs.watch('services.yaml', async () => {
     console.log('Reloading server...');
     try {
-      await loadServices();
+      await loadYAML();
       console.log('Server reloaded successfully');
     } catch (error) {
       console.error('Failed to reload server', error);
@@ -14,17 +14,20 @@ const watchFileChanges = () => {
   });
 };
 
-const loadServices = async () => {
+const loadYAML = async () => {
   try {
     const fileContents = await fs.promises.readFile('services.yaml', 'utf8');
     utils.updateServices(yaml.load(fileContents));
-    console.log('Services configuration loaded');
+    utils.updateRateLimit(yaml.load(fileContents));
+    console.log('YAML configuration loaded');
   } catch (error) {
-    console.error('Failed to load services configuration', error);
+    console.error('Failed to load YAML configuration', error);
   }
 };
 
+
+
 module.exports = {
   startWatching: watchFileChanges,
-  loadServices: loadServices,
+  loadYAML: loadYAML,
 };

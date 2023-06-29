@@ -4,12 +4,34 @@ const utils = require('./utils');
 
 const router = express.Router();
 
+// Rate Limit Middleware
+// router.use('/:service/*', (req, res, next) => {
+//   const { service } = req.params;
+//   const matchedService = utils.getServices().find(s => s.path.toLowerCase() === service.toLowerCase());
+//   const rateLimitConfig = utils.getRateLimit()
+//   if (rateLimitConfig && rateLimitConfig.enabled) {
+//     rateLimitConfig.limiter()
+//     .then(function () {
+//       console.log('ffasfaf');
+//       next();
+//     })
+//     .catch(
+//       function() {
+//         console.log('123123123');
+//         res.status(429).send(rateLimitConfig.errorMsg);
+//       }
+//     );
+//   } else {
+//     next();
+//   }
+// });
+
 router.all('/:service/*', async (req, res) => {
   const { service } = req.params;
   const matchedService = utils.getServices().find(s => s.path.toLowerCase() === service.toLowerCase());
+
   if (!matchedService) {
-    res.status(404).json({ error: 'Service not found' });
-    return;
+    return res.status(404).send({ error: 'Service not found' });
   }
 
   const { url } = matchedService;
@@ -31,15 +53,17 @@ router.all('/:service/*', async (req, res) => {
       data: req.body,
     });
     // console.log(`METHOD=>${req.method}\nURL=>${url}${path}`);
-    return res.status(response.status).send(response.data);
+    return res.status(response.status).json(response.data);
   } catch (error) {
     if (error.response) {
-      return res.status(error.response.status).send(error.response.data);
+      return res.status(error.response.status).json(error.response.data);
     } else {
-      console.log(error);
+      console.log(`ERROR=> ${error}`);
       return res.status(500).json({ error: 'Internal Server Error' });
     }
   }
 });
+
+
 
 module.exports = router;
