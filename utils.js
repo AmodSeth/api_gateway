@@ -1,5 +1,6 @@
 let services = [];
-let rateLimitConfig = {}
+let rateLimitConfig = {};
+let allowedHosts = [];
 
 
 
@@ -29,6 +30,7 @@ const updateServices = (conf) => {
     });
     services = conf.services;
 };
+
 const updateRateLimit = (conf) => {
     //validation for rateLimit
     if (!conf.hasOwnProperty('rateLimit')) {
@@ -44,12 +46,25 @@ const updateRateLimit = (conf) => {
     rateLimitConfig = conf.rateLimit
 };
 
+const updateAllowedHosts = (conf) => {
+    //validation for AllowedHosts
+    if (!conf.hasOwnProperty('allowedHosts')) {
+        throw new Error('YAML file is missing the allowedHosts object');
+    }
+    if (conf.allowedHosts){
+        allowedHosts = conf.allowedHosts
+    }
+};
+
 const getServices = () => {
   return services;
 };
 
 const getRateLimit = () => {
   return rateLimitConfig;
+};
+const getAllowedHosts = () => {
+  return allowedHosts;
 };
 
 // Function to verify JWT token
@@ -91,5 +106,7 @@ module.exports = {
   getServices: getServices,
   verifyToken: verifyToken,
   getRateLimit: getRateLimit,
+  getAllowedHosts: getAllowedHosts,
   updateRateLimit: updateRateLimit,
+  updateAllowedHosts: updateAllowedHosts,
 };

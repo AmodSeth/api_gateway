@@ -5,13 +5,34 @@ const fileWatcher = require('./fileWatcher');
 const bodyParser = require('body-parser');
 const multer = require('multer');
 const helmet = require("helmet")
+const cors = require('cors');
+const utils = require('./utils');
 
 const app = express();
-// Create a multer instance to handle form-data requests
-const upload = multer();
+
+// Enable CORS for a specific domain
+app.use(cors({
+  origin: function (origin, callback) {
+    if (utils.getAllowedHosts().includes("*") || !origin){
+      callback(null, true);
+    }
+    else{
+      if (utils.getAllowedHosts().includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+
+      }
+    }
+  }
+}));
 
 // Middleware for security purposes
 app.use(helmet());
+
+// Create a multer instance to handle form-data requests
+const upload = multer();
+
 
 // Middleware to parse JSON body
 app.use(bodyParser.json());

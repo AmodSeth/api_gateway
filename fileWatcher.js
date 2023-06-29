@@ -19,6 +19,7 @@ const loadYAML = async () => {
     const fileContents = await fs.promises.readFile('services.yaml', 'utf8');
     utils.updateServices(yaml.load(fileContents));
     utils.updateRateLimit(yaml.load(fileContents));
+    utils.updateAllowedHosts(yaml.load(fileContents));
     console.log('YAML configuration loaded');
   } catch (error) {
     console.error('Failed to load YAML configuration', error);

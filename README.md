@@ -23,6 +23,11 @@ This microservice acts as a single point of contact for FrontEnd, without exposi
 
 ## services.yaml content
 ```
+allowedHosts:
+  - "https://example.com"
+  - "http://localhost"
+  - "*"
+
 rateLimit:
   enabled: true
   durationInSec: 10
