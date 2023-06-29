@@ -1,30 +1,9 @@
 const express = require('express');
 const axios = require('axios');
 const utils = require('./utils');
+const FormData = require('form-data');
 
 const router = express.Router();
-
-// Rate Limit Middleware
-// router.use('/:service/*', (req, res, next) => {
-//   const { service } = req.params;
-//   const matchedService = utils.getServices().find(s => s.path.toLowerCase() === service.toLowerCase());
-//   const rateLimitConfig = utils.getRateLimit()
-//   if (rateLimitConfig && rateLimitConfig.enabled) {
-//     rateLimitConfig.limiter()
-//     .then(function () {
-//       console.log('ffasfaf');
-//       next();
-//     })
-//     .catch(
-//       function() {
-//         console.log('123123123');
-//         res.status(429).send(rateLimitConfig.errorMsg);
-//       }
-//     );
-//   } else {
-//     next();
-//   }
-// });
 
 router.all('/:service/*', async (req, res) => {
   const { service } = req.params;
@@ -46,6 +25,23 @@ router.all('/:service/*', async (req, res) => {
     //   return res.status(status).json({ error: data });
     // }
 
+    if (req.files) {
+      const form = new FormData();
+      // Add file data to the FormData object
+      Object.keys(req.files).forEach(key => {
+        const fileData = req.files[key];
+        form.append(fileData.fieldname, fileData.buffer, {
+          filename: fileData.originalname,
+          contentType: fileData.mimetype,
+        });
+      });
+      // Add other data from req.body to the FormData object
+      Object.keys(req.body).forEach(key => {
+        const value = req.body[key];
+        form.append(key, value);
+      });
+      req.body = form;
+    }
     const response = await axios({
       method: req.method,
       url: `${url}${path}`,
