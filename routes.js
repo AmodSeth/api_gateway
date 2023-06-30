@@ -71,12 +71,27 @@ router.all('/:service/:sub_url/*', async (req, res) => {
       url: `${url}${path}`,
       headers: req.headers,
       data: req.body,
+      responseType: 'stream', // Set the response type to stream
     });
-    // console.log(`METHOD=>${req.method}\nURL=>${url}${path}`);
-    return res.status(response.status).send(response.data);
+    // Set the appropriate headers for file download
+    const contentDisposition = response.headers['content-disposition'];
+    const contentType = response.headers['content-type'];
+    if (contentDisposition) {
+      res.set('Content-Disposition', contentDisposition);
+    }
+    if (contentType) {
+      res.set('Content-Type', contentType);
+    }
+    response.data.pipe(res);
+    // res.status(response.status).send(response.data);
   } catch (error) {
     if (error.response) {
-      return res.status(error.response.status).json(error.response.data);
+      const contentDisposition = error.response.headers['content-disposition'];
+      if (contentDisposition) {
+        res.set('Content-Disposition', contentDisposition);
+      }
+      error.response.data.pipe(res);
+      // res.status(error.response.status).send(error.response.data);
     } else {
       console.log(`ERROR=> ${error}`);
       return res.status(500).json({ error: 'Internal Server Error' });

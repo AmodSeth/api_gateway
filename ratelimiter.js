@@ -15,7 +15,6 @@ async function isOverLimit(ip) {
     if (res > utils.getRateLimit().maxRequests) {
       return true;
     }
-    console.log('asdasdas',utils.getRateLimit().durationInSec)
     await client.expire(ip, utils.getRateLimit().durationInSec);
     return false;
   } catch (err) {

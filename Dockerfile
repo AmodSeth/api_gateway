@@ -1,4 +1,4 @@
-FROM node:14.15.4-alpine
+FROM node:16.13.0-alpine
 WORKDIR /application
 RUN apk update && apk add bash
 RUN apk update && apk add apache2-utils # for benchmarking
