@@ -68,7 +68,20 @@ router.all('/:service/:sub_url/*', async (req, res) => {
     if (contentType) {
       res.set('Content-Type', contentType);
     }
-    response.data.pipe(res);
+    if (contentType.includes('text/html')){
+      let html = ''
+      response.data.on('data', chunk =>{
+        html+=chunk
+      })
+      response.data.on('end',() =>{
+        html = utils.modifingRelativeUrls(html, service)
+        res.status(response.status)
+        res.status(response.status).send(html);
+      })
+    }
+    else{
+      response.data.pipe(res);
+    }
   } catch (error) {
     if (error.response) {
       const contentDisposition = error.response.headers['content-disposition'];

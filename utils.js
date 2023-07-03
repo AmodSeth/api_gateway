@@ -104,7 +104,8 @@ const verifyToken = (req, service) => {
 // Modifing Relative urls present an HTML file with service name
 const modifingRelativeUrls = (html, service) => {
     prefix = `/${service}/`
-    html = html.replace(/(["'])\/([^"']+?)\1/g, `$1${prefix}$2$1`);
+    const attrRegex = /(["'])\/([^"']+?)\1/g
+    html = html.replace(attrRegex, `$1${prefix}$2$1`);
     return html
 }
 
