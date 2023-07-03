@@ -2,7 +2,8 @@ const express = require('express');
 const axios = require('axios');
 const utils = require('./utils');
 const FormData = require('form-data');
-const rateCheck = require('./ratelimiter')
+const rateCheck = require('./ratelimiter');
+const { response } = require('./app');
 
 const router = express.Router();
 
@@ -48,24 +49,8 @@ router.all('/:service/:sub_url/*', async (req, res) => {
     }
 
     if (req.files) {
-      const form = new FormData();
-      // Add file data to the FormData object
-      Object.keys(req.files).forEach(key => {
-        const fileData = req.files[key];
-        form.append(fileData.fieldname, fileData.buffer, {
-          filename: fileData.originalname,
-          contentType: fileData.mimetype,
-        });
-      });
-      // Add other data from req.body to the FormData object
-      Object.keys(req.body).forEach(key => {
-        const value = req.body[key];
-        form.append(key, value);
-      });
-      req.body = form;
+      req = utils.createFormDataUsingReqFiles(req)
     }
-
-    
     const response = await axios({
       method: req.method,
       url: `${url}${path}`,
@@ -76,6 +61,7 @@ router.all('/:service/:sub_url/*', async (req, res) => {
     // Set the appropriate headers for file download
     const contentDisposition = response.headers['content-disposition'];
     const contentType = response.headers['content-type'];
+
     if (contentDisposition) {
       res.set('Content-Disposition', contentDisposition);
     }
@@ -83,15 +69,32 @@ router.all('/:service/:sub_url/*', async (req, res) => {
       res.set('Content-Type', contentType);
     }
     response.data.pipe(res);
-    // res.status(response.status).send(response.data);
   } catch (error) {
     if (error.response) {
       const contentDisposition = error.response.headers['content-disposition'];
+      const contentType = error.response.headers['content-type'];
       if (contentDisposition) {
         res.set('Content-Disposition', contentDisposition);
       }
-      error.response.data.pipe(res);
-      // res.status(error.response.status).send(error.response.data);
+      if (contentType) {
+        res.set('Content-Type', contentType);
+      }
+      res.status(error.response.status)
+
+      if (contentType.includes('text/html')){
+        let html = ''
+        error.response.data.on('data', chunk =>{
+          html+=chunk
+        })
+        error.response.data.on('end',() =>{
+          html = utils.modifingRelativeUrls(html, service)
+          res.status(error.response.status)
+          res.status(error.response.status).send(html);
+        })
+      }
+      else{
+        error.response.data.pipe(res);
+      }
     } else {
       console.log(`ERROR=> ${error}`);
       return res.status(500).json({ error: 'Internal Server Error' });

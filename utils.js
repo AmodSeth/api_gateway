@@ -5,6 +5,7 @@ let allowedHosts = [];
 
 
 const jwt = require('jsonwebtoken');
+const FormData = require('form-data');
 
 
 const updateServices = (conf) => {
@@ -98,8 +99,33 @@ const verifyToken = (req, service) => {
         result.status=403;
         return result;
     }
-    }
+};
 
+// Modifing Relative urls present an HTML file with service name
+const modifingRelativeUrls = (html, service) => {
+    prefix = `/${service}/`
+    html = html.replace(/(["'])\/([^"']+?)\1/g, `$1${prefix}$2$1`);
+    return html
+}
+
+const createFormDataUsingReqFiles = (req) => {
+    const form = new FormData();
+    // Add file data to the FormData object
+    Object.keys(req.files).forEach(key => {
+        const fileData = req.files[key];
+        form.append(fileData.fieldname, fileData.buffer, {
+            filename: fileData.originalname,
+            contentType: fileData.mimetype,
+        });
+    });
+    // Add other data from req.body to the FormData object
+    Object.keys(req.body).forEach(key => {
+        const value = req.body[key];
+        form.append(key, value);
+    });
+    req.body = form;
+    return req
+}
 
 module.exports = {
   updateServices: updateServices,
@@ -109,4 +135,6 @@ module.exports = {
   getAllowedHosts: getAllowedHosts,
   updateRateLimit: updateRateLimit,
   updateAllowedHosts: updateAllowedHosts,
+  modifingRelativeUrls: modifingRelativeUrls,
+  createFormDataUsingReqFiles: createFormDataUsingReqFiles
 };
