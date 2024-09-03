@@ -7,7 +7,7 @@ const watchFileChanges = () => {
     console.log('Reloading server...');
     try {
       await loadYAML();
-      console.log('Server reloaded successfully');
+      console.log('Server reloadd successfully');
     } catch (error) {
       console.error('Failed to reload server', error);
     }
